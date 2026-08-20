@@ -1,0 +1,383 @@
+ORDER MANAGEMENT
+│
+├── 01. ORDER ENTRY
+│   │
+│   └── Customer Order তৈরি
+│       │
+│       ├── Order ID তৈরি
+│       ├── Customer ID সংযুক্ত
+│       ├── Seller ID সংযুক্ত
+│       ├── Product / SKU / Variant
+│       ├── Quantity
+│       ├── Order Amount
+│       ├── Payment Method
+│       ├── Payment Status
+│       ├── Customer Phone
+│       ├── Customer Email
+│       ├── Delivery Address
+│       ├── Order Date & Time
+│       └── Risk / Fraud Check
+│
+│
+├── 02. CENTRAL ADMIN APPROVAL
+│   │
+│   └── NEW ORDER → "AWAITING ADMIN APPROVAL"
+│       │
+│       ├── Seller এখনো Order দেখতে পাবে না
+│       │
+│       ├── Admin Order যাচাই করবে
+│       │   ├── Customer তথ্য
+│       │   ├── Seller তথ্য
+│       │   ├── Product
+│       │   ├── Payment
+│       │   ├── Address
+│       │   └── Risk Status
+│       │
+│       └── ACTION
+│           ├── Confirm
+│           │   └── RELEASE TO SELLER
+│           │       └── Seller App/Panel-এ Order Visible
+│           │
+│           └── Cancel
+│               └── CANCELLED
+│
+│       ├── Single Confirm
+│       ├── Single Cancel
+│       ├── Select Multiple
+│       ├── Bulk Confirm
+│       └── Bulk Cancel
+│
+│
+├── 03. ORDER MASTER
+│   │
+│   └── Confirmed / Released Order
+│       │
+│       ├── New
+│       ├── Pending
+│       ├── Confirmed
+│       ├── Released to Seller
+│       ├── Processing
+│       ├── Ready for Pickup
+│       ├── Picked Up
+│       ├── In Transit
+│       ├── Out for Delivery
+│       ├── Delivered
+│       ├── Cancelled
+│       ├── Returned
+│       └── Refunded
+│
+│
+├── 04. SELLER PROCESSING
+│   │
+│   └── Seller Order গ্রহণ
+│       │
+│       ├── Processing
+│       ├── Product Ready
+│       ├── Packing
+│       └── Ready for Pickup
+│
+│       └── SELLER SLA MONITOR
+│           ├── Normal
+│           ├── SLA Warning
+│           ├── SLA Breached
+│           └── Escalation
+│
+│
+├── 05. PICKUP CONTROL
+│   │
+│   └── Ready for Pickup
+│       │
+│       ├── Pickup Scheduled
+│       ├── Pickup Assigned
+│       ├── Pickup Pending
+│       ├── Picked Up
+│       ├── Pickup Failed
+│       └── Pickup Rescheduled
+│
+│       └── PICKUP AGING
+│           ├── 24 Hours+
+│           ├── 48 Hours+ ⚠️
+│           └── 72 Hours+ 🚨
+│
+│       └── SELLER-WISE MONITORING
+│           ├── Seller
+│           ├── Today's Orders
+│           ├── Today's Pickup
+│           ├── Pending Pickup
+│           └── Overdue Pickup
+│
+│
+├── 06. SHIPMENT / COURIER
+│   │
+│   └── PICKED UP
+│       │
+│       ├── Tracking ID
+│       ├── Courier
+│       ├── Current Location
+│       ├── Last Update
+│       ├── Expected Delivery
+│       │
+│       └── LIVE STATUS
+│           ├── Picked Up
+│           ├── At Hub
+│           ├── In Transit
+│           ├── Destination Hub
+│           ├── Out for Delivery
+│           ├── Delivered
+│           └── Delivery Failed
+│
+│
+├── 07. DELIVERY CONTROL
+│   │
+│   └── IN TRANSIT
+│       │
+│       ├── Normal Delivery
+│       ├── Delivery Attempted
+│       ├── Customer Unreachable
+│       ├── Wrong Address
+│       ├── Customer Unavailable
+│       ├── Delivery Rescheduled
+│       └── Delivery Failed
+│
+│       └── DELIVERY AGING
+│           ├── 1 Day+
+│           ├── 2 Days+
+│           ├── 3 Days+
+│           ├── 4 Days+ ⚠️
+│           ├── 5 Days+
+│           ├── 7 Days+ 🚨
+│           ├── 15 Days+
+│           └── Custom Days
+│
+│
+├── 08. DELIVERY SUCCESS
+│   │
+│   └── DELIVERED
+│       │
+│       ├── Delivery Date
+│       ├── Delivery Time
+│       ├── Proof of Delivery
+│       ├── Payment Collection
+│       └── Order Completed
+│
+│
+├── 09. CANCELLATION
+│   │
+│   └── CANCELLED
+│       │
+│       ├── Customer Cancelled
+│       ├── Seller Cancelled
+│       ├── Admin Cancelled
+│       ├── Payment Failed
+│       └── System Cancelled
+│
+│       └── Cancellation Reason
+│           ├── Reason
+│           ├── Who Cancelled
+│           ├── Date / Time
+│           └── Audit Record
+│
+│
+├── 10. RETURN MANAGEMENT
+│   │
+│   └── RETURN INITIATED
+│       │
+│       ├── Return Requested
+│       ├── Return Approved
+│       ├── Return Pickup Pending
+│       ├── Return Picked Up
+│       ├── Return In Transit
+│       ├── Return Received
+│       └── Return Rejected
+│
+│       └── RETURN AGING
+│           ├── 1 Day+
+│           ├── 2 Days+
+│           ├── 3 Days+
+│           ├── 7 Days+
+│           └── 15 Days+
+│
+│       └── বিশেষ Alert
+│           └── "Return Parcel Seller-এর কাছে এখনো পৌঁছায়নি"
+│
+│
+├── 11. REFUND MANAGEMENT
+│   │
+│   ├── Refund Pending
+│   ├── Refund Processing
+│   ├── Partial Refund
+│   ├── Full Refund
+│   ├── Refund Failed
+│   └── Refunded
+│
+│
+├── 12. PAYMENT CONTROL
+│   │
+│   ├── Paid
+│   ├── COD
+│   ├── Payment Pending
+│   ├── Payment Failed
+│   ├── Partial Payment
+│   ├── Refund Pending
+│   └── Refunded
+│
+│
+├── 13. ORDER SEARCH & HISTORY
+│   │
+│   └── GLOBAL SEARCH
+│       │
+│       ├── Order ID
+│       ├── Tracking ID
+│       ├── Seller ID
+│       ├── Seller Phone
+│       ├── Customer ID
+│       ├── Customer Phone
+│       ├── Customer Gmail / Email
+│       └── Customer Name
+│
+│       ├── Seller Search
+│       │   └── Seller-এর সম্পূর্ণ Order History
+│       │
+│       └── Customer Search
+│           └── Customer-এর সম্পূর্ণ Order History
+│
+│
+├── 14. ORDER DETAILS
+│   │
+│   └── প্রতিটি Order খুললে
+│       │
+│       ├── Order Information
+│       ├── Customer Information
+│       ├── Seller Information
+│       ├── Product Information
+│       ├── Payment Information
+│       ├── Delivery Information
+│       ├── Courier Information
+│       ├── Tracking Information
+│       ├── Documents
+│       ├── Internal Notes
+│       └── Complete Timeline
+│
+│
+├── 15. ORDER TIMELINE
+│   │
+│   └── প্রতিটি Action-এর সম্পূর্ণ ইতিহাস
+│       │
+│       ├── Order Created
+│       ├── Payment Confirmed
+│       ├── Admin Reviewed
+│       ├── Admin Confirmed
+│       ├── Released to Seller
+│       ├── Seller Processing
+│       ├── Ready for Pickup
+│       ├── Picked Up
+│       ├── In Transit
+│       ├── Out for Delivery
+│       ├── Delivered
+│       ├── Cancelled
+│       ├── Returned
+│       └── Refunded
+│
+│       প্রতিটি Event-এর সাথে:
+│       ├── কে করেছে
+│       ├── Date
+│       ├── Time
+│       ├── Status
+│       ├── Reason
+│       └── পরিবর্তনের তথ্য
+│
+│
+├── 16. EXCEPTION / PROBLEM CENTER
+│   │
+│   └── System নিজে থেকে সমস্যা শনাক্ত করবে
+│       │
+│       ├── Admin Approval Overdue
+│       ├── Seller Processing Overdue
+│       ├── Pickup 24h+
+│       ├── Pickup 48h+
+│       ├── Pickup 72h+
+│       ├── Delivery 4d+
+│       ├── Delivery 7d+
+│       ├── Delivery 15d+
+│       ├── Failed Delivery
+│       ├── Return Overdue
+│       ├── Refund Overdue
+│       ├── Payment Problem
+│       ├── Address Problem
+│       └── High Risk Order
+│
+│
+├── 17. ORDER PRIORITY & RISK
+│   │
+│   ├── Priority
+│   │   ├── Normal
+│   │   ├── High
+│   │   ├── Urgent
+│   │   └── VIP
+│   │
+│   └── Risk
+│       ├── Low Risk
+│       ├── Medium Risk
+│       └── High Risk
+│
+│       Risk Check:
+│       ├── Repeated Cancellation
+│       ├── Suspicious COD
+│       ├── Duplicate Order
+│       ├── Address Pattern
+│       └── Phone / Customer Pattern
+│
+│
+├── 18. SPECIAL ORDER HANDLING
+│   │
+│   ├── Partial Shipment
+│   ├── Partial Cancellation
+│   ├── Partial Refund
+│   ├── Product / Variant Modification
+│   ├── Quantity Modification
+│   ├── Address Correction
+│   ├── Phone Correction
+│   └── Delivery Instruction
+│
+│
+├── 19. BULK OPERATIONS
+│   │
+│   ├── Bulk Confirm
+│   ├── Bulk Cancel
+│   ├── Bulk Assign Courier
+│   ├── Bulk Change Status
+│   ├── Bulk Print Invoice
+│   ├── Bulk Print Shipping Label
+│   └── Bulk Export
+│
+│
+├── 20. NOTIFICATION SYSTEM
+│   │
+│   ├── New Order Alert
+│   ├── Approval Alert
+│   ├── Seller Release Notification
+│   ├── Pickup Alert
+│   ├── Delivery Delay Alert
+│   ├── Return Alert
+│   ├── Refund Alert
+│   └── Customer / Seller Notification History
+│
+│
+└── 21. ORDER CONTROL DASHBOARD
+    │
+    ├── Today's Total Orders
+    ├── Today's Total Sales
+    ├── New Orders
+    ├── Pending Approval
+    ├── Confirmed
+    ├── Released to Seller
+    ├── Processing
+    ├── Pickup Pending
+    ├── Pickup 48h+
+    ├── In Transit
+    ├── Delivery 4d+
+    ├── Delivered
+    ├── Cancelled
+    ├── Returned
+    ├── Refund Pending
+    └── Seller-wise Live Performance
