@@ -1,0 +1,421 @@
+# LAKEZ Admin Panel — Complete Project Structure
+# Last Updated: August 2026
+
+=================================================
+## TECH STACK
+=================================================
+
+FRONTEND:
+- Framework: Flutter Web
+- State Management: Riverpod
+- Architecture: Clean Architecture + Feature First
+- Build Command: flutter build web --release
+- Run Command: npx serve build\web
+- URL: http://localhost:3000
+
+BACKEND:
+- Firebase Authentication (Email + Password)
+- Cloud Firestore (Database)
+- Firebase Storage (Images/Files)
+- Firebase Messaging (Push Notifications)
+- No Cloud Functions yet (Direct Firestore writes)
+
+DATABASE:
+- Cloud Firestore (NoSQL)
+- Real-time updates via snapshots()
+- Security Rules: request.auth != null
+
+COURIER:
+- Steadfast API (Sandbox mode)
+- API Key stored in Firestore (NOT in code)
+- Collection: merchants/LAKEZ_MAIN_MERCHANT
+
+PAYMENT:
+- COD (Cash on Delivery)
+- bKash
+- Nagad
+
+=================================================
+## HOW IT WORKS
+=================================================
+
+Flutter Web App
+↓
+Firebase Authentication (Login)
+↓
+Cloud Firestore (Read/Write data)
+↓
+Firebase Storage (Upload images)
+↓
+Steadfast API (Courier - via Firestore config)
+
+Data Flow:
+Admin Action → Flutter → Firestore → Real-time update → UI
+
+=================================================
+## PROJECT FOLDER STRUCTURE
+=================================================
+
+C:\Users\Asus\Documents\GitHub\lakez_admin_panel\
+│
+├── lib\
+│   ├── main.dart
+│   │   └── App entry point, Firebase init
+│   │
+│   ├── firebase_options.dart
+│   │   └── Firebase config (auto-generated)
+│   │
+│   ├── config\
+│   │   └── app_colors.dart
+│   │       └── Color palette for the app
+│   │
+│   ├── core\
+│   │   └── constants\
+│   │       └── app_constants.dart
+│   │           └── App-wide constants
+│   │
+│   ├── services\
+│   │   └── auth_service.dart
+│   │       └── Firebase Auth login/logout
+│   │
+│   └── modules\
+│       │
+│       ├── auth\
+│       │   └── screens\
+│       │       └── login_screen.dart
+│       │           └── Admin login with Firebase Auth
+│       │
+│       ├── dashboard\
+│       │   ├── screens\
+│       │   │   └── dashboard_screen.dart
+│       │   │       └── Main layout with sidebar + all modules
+│       │   └── widgets\
+│       │       └── dashboard_home.dart
+│       │           └── Home screen with stats cards
+│       │
+│       ├── product_management\
+│       │   ├── screens\
+│       │   │   ├── product_list_screen.dart
+│       │   │   │   └── All Products Tab (5 tabs total)
+│       │   │   │       ├── All Products (with search, filter, sort, bulk, export)
+│       │   │   │       ├── Pending Approval (placeholder)
+│       │   │   │       ├── Inventory (placeholder)
+│       │   │   │       ├── Reviews (placeholder)
+│       │   │   │       ├── Issues (placeholder)
+│       │   │   │       └── Categories & Brands (embedded)
+│       │   │   │
+│       │   │   └── category_brand\
+│       │   │       └── category_brand_screen.dart
+│       │   │           └── Category Management
+│       │   │               ├── 3-Level: Category → Sub → Second Sub
+│       │   │               ├── Size at Main Category level (auto-inherited)
+│       │   │               ├── Size types: Clothing, Shoe, Waist
+│       │   │               └── Brand Management
+│       │   │
+│       │   └── tabs\
+│       │       ├── pending_approval_tab.dart (placeholder)
+│       │       ├── inventory_tab.dart (placeholder)
+│       │       ├── product_reviews_tab.dart (placeholder)
+│       │       └── product_issues_tab.dart (placeholder)
+│       │
+│       ├── seller_management\
+│       │   ├── screens\
+│       │   │   ├── seller_list_screen.dart
+│       │   │   │   └── All sellers with search, filter, stats
+│       │   │   └── seller_details_screen.dart
+│       │   │       └── Seller profile with 6 tabs
+│       │   └── tabs\
+│       │       ├── seller_info_tab.dart
+│       │       │   └── Personal info, shop info, payment info, controls
+│       │       ├── seller_kyc_tab.dart
+│       │       │   └── NID, Trade License, Approve/Reject
+│       │       ├── seller_commission_tab.dart
+│       │       │   └── Commission rate slider (5-20%)
+│       │       ├── seller_wallet_tab.dart
+│       │       │   └── Balance cards, transaction history
+│       │       ├── seller_orders_tab.dart
+│       │       │   └── Seller order history
+│       │       └── seller_pickup_tab.dart
+│       │           └── Pickup locations management
+│       │
+│       ├── customer_management\
+│       │   ├── screens\
+│       │   │   ├── customer_list_screen.dart
+│       │   │   │   └── All customers with 2 tabs
+│       │   │   │       ├── All Customers (search, filter, risk score)
+│       │   │   │       └── Blocked & Banned
+│       │   │   └── customer_details_screen.dart
+│       │   │       └── Customer profile with 8 tabs
+│       │   └── tabs\
+│       │       ├── customer_profile_tab.dart
+│       │       │   └── Basic info, security, delivery stats, financial summary
+│       │       ├── customer_address_tab.dart
+│       │       │   └── Address book with 64 districts, Add/Edit/Delete
+│       │       ├── customer_orders_tab.dart
+│       │       │   └── Order history with timeline, health score, COD status
+│       │       ├── customer_wallet_tab.dart
+│       │       │   └── Balance cards, mobile banking numbers, transactions
+│       │       ├── customer_complaints_tab.dart
+│       │       │   └── Complaint/ticket history with priority badges
+│       │       ├── customer_seller_follow_tab.dart
+│       │       │   └── Which sellers customer follows
+│       │       ├── customer_activity_tab.dart
+│       │       │   └── Login history, device logs, IP tracking
+│       │       └── customer_control_tab.dart
+│       │           └── Restriction Level System (0-5)
+│       │               ├── Level 0: New Customer (all benefits ON)
+│       │               ├── Level 1: Warning (all ON + note)
+│       │               ├── Level 2: Partial (Review OFF, Coupon OFF)
+│       │               ├── Level 3: Heavy (COD OFF, Advance Charge ON)
+│       │               ├── Level 4: Block (No orders)
+│       │               └── Level 5: Ban (Full ban)
+│       │           └── Individual Permission Toggles
+│       │           └── Free Delivery (OFF by default, with limit)
+│       │           └── Admin Notes Timeline
+│       │
+│       ├── courier_management\
+│       │   └── screens\
+│       │       ├── courier_screen.dart
+│       │       │   └── Main courier screen with 4 tabs
+│       │       ├── tabs\
+│       │       │   ├── courier_setup_tab.dart
+│       │       │   │   └── Steadfast API Key/Secret (stored in Firestore)
+│       │       │   │   └── Sandbox/Live mode toggle
+│       │       │   │   └── Connection test
+│       │       │   ├── parcel_list_tab.dart
+│       │       │   │   └── All parcels with tracking status
+│       │       │   └── api_logs_tab.dart
+│       │       │       └── API request/response logs
+│       │       └── delivery_charge\
+│       │           └── delivery_charge_screen.dart
+│       │               └── 3 Tabs:
+│       │               ├── Zone Charges (Inside/Outside District + Return)
+│       │               ├── Weight Based Charges (Add/Edit/Delete rules)
+│       │               └── Free Delivery Rules (Add/Edit/Delete)
+│       │
+│       └── order_management\
+│           ├── screens\
+│           │   ├── order_list_screen.dart
+│           │   │   └── 9 Tabs:
+│           │   │       ├── All Orders
+│           │   │       ├── Awaiting Approval ⚡
+│           │   │       ├── Processing
+│           │   │       ├── Pickup Pending
+│           │   │       ├── In Transit
+│           │   │       ├── Delivered
+│           │   │       ├── Cancelled
+│           │   │       ├── Return & Refund
+│           │   │       └── Exceptions 🚨
+│           │   │   └── Features:
+│           │   │       ├── Search (Order ID, Customer, Seller, Phone, Email)
+│           │   │       ├── Bulk Select + Confirm + Cancel
+│           │   │       └── Stats Dashboard
+│           │   │
+│           │   └── order_details_screen.dart
+│           │       └── Left Menu + Right Content Layout
+│           │       └── 21 Sections (click left menu → right shows content)
+│           │
+│           └── sections\
+│               ├── s01_order_info.dart (placeholder)
+│               │   └── Order ID, Customer, Seller, Product, Amount
+│               ├── s02_admin_approval.dart (placeholder)
+│               │   └── Approve/Cancel order before releasing to seller
+│               ├── s03_order_status.dart (placeholder)
+│               │   └── Current status + full status history
+│               ├── s04_seller_processing.dart (placeholder)
+│               │   └── Seller SLA monitor (Normal/Warning/Breached)
+│               ├── s05_pickup_control.dart (placeholder)
+│               │   └── Pickup status + aging (24h/48h/72h alerts)
+│               ├── s06_courier_shipment.dart (placeholder)
+│               │   └── Tracking ID + live courier status
+│               ├── s07_delivery_control.dart (placeholder)
+│               │   └── Delivery aging (1d/2d/4d/7d/15d alerts)
+│               ├── s08_delivery_success.dart (placeholder)
+│               │   └── Delivery proof + COD collection
+│               ├── s09_cancellation.dart (placeholder)
+│               │   └── Who cancelled + reason + audit record
+│               ├── s10_return_management.dart (placeholder)
+│               │   └── Return flow + aging + special alerts
+│               ├── s11_refund_management.dart (placeholder)
+│               │   └── Refund status + processing
+│               ├── s12_payment_control.dart (placeholder)
+│               │   └── Payment method + COD status
+│               ├── s13_search_history.dart (placeholder)
+│               │   └── Global search + order history
+│               ├── s14_order_details.dart (placeholder)
+│               │   └── Complete order info with documents
+│               ├── s15_order_timeline.dart (placeholder)
+│               │   └── All events with who/when/why
+│               ├── s16_exception_center.dart (placeholder)
+│               │   └── System detected problems + overdue alerts
+│               ├── s17_priority_risk.dart (placeholder)
+│               │   └── Priority (Normal/High/Urgent/VIP) + Risk level
+│               ├── s18_special_handling.dart (placeholder)
+│               │   └── Address/Phone correction + delivery instructions
+│               ├── s19_bulk_operations.dart (placeholder)
+│               │   └── Bulk confirm/cancel/print/export
+│               ├── s20_notifications.dart (placeholder)
+│               │   └── All notification history for this order
+│               └── s21_dashboard.dart (placeholder)
+│                   └── Live order control dashboard
+│
+=================================================
+## FIRESTORE COLLECTIONS (Used so far)
+=================================================
+
+admins/
+└── {uid} → Admin accounts
+
+sellers/
+└── {sellerId} → Seller accounts + KYC + Commission + Status
+
+seller_kyc/
+└── {kycId} → NID + Trade License images
+
+customers/
+└── {customerId} → Customer accounts
+    └── addressBook/ → Delivery addresses
+    └── adminNotes/ → Admin notes timeline
+
+products/
+└── {productId} → Product listings
+
+categories/
+└── {categoryId} → Main categories + sizes[]
+
+sub_categories/
+└── {subId} → Sub-categories (sizes auto-inherited)
+
+second_sub_categories/
+└── {secId} → Second level (sizes auto-inherited)
+
+brands/
+└── {brandId} → Product brands
+
+sizes/
+└── {sizeId} → Available sizes (S,M,L,XL,28,30...)
+
+orders/
+└── {orderId} → All orders
+
+wallets/
+└── {walletId} → Seller/Customer wallet balances
+
+transactions/
+└── {txId} → Financial transactions
+
+merchants/
+└── LAKEZ_MAIN_MERCHANT → Steadfast API config
+
+delivery_charges/
+└── main_delivery_charges → Inside/Outside district charges
+
+weight_charges/
+└── {id} → Weight-based charge rules
+
+free_delivery_rules/
+└── {id} → Free delivery conditions
+
+pickup_locations/
+└── {locId} → Seller pickup addresses
+
+parcels/
+└── {parcelId} → Courier parcels
+
+webhook_logs/
+└── {logId} → Steadfast webhook logs
+
+notifications/
+└── {notifId} → Push notifications
+
+tickets/
+└── {ticketId} → Customer complaints
+
+device_logs/
+└── {logId} → Customer device/login logs
+
+seller_follows/
+└── {followId} → Customer follows seller
+
+=================================================
+## MODULES STATUS
+=================================================
+
+✅ COMPLETED:
+- Login + Firebase Auth
+- Dashboard + Navigation (16 menu items)
+- Category & Brand & Size Management
+- Courier Management + Delivery Charges
+- Seller Management (6 tabs - full)
+- Customer Management (8 tabs - full)
+- Product Management (5 tabs - All Products complete)
+- Order Management (List + Details structure)
+
+⏳ PLACEHOLDER (Structure ready, content needed):
+- Product: Pending Approval Tab
+- Product: Inventory Tab
+- Product: Reviews Tab
+- Product: Issues Tab
+- Order: All 21 Sections
+
+❌ NOT STARTED YET:
+- Settlement Management
+- Wallet Management
+- Withdraw Management
+- Coupon & Campaign Management
+- Notification Management
+- Chat & Fraud Detection
+- Review Management
+- Report & Analytics
+- Settings Management
+- AI Marketplace Intelligence (Google ADK - deferred)
+
+=================================================
+## IMPORTANT DECISIONS
+=================================================
+
+1. Single Merchant Account
+   → merchantId: LAKEZ_MAIN_MERCHANT
+   → All sellers use same Steadfast account
+
+2. API Keys Security
+   → Never in code
+   → Stored in Firestore: merchants/LAKEZ_MAIN_MERCHANT
+
+3. Size System
+   → Added at Main Category level
+   → Auto-inherited to Sub + Second Sub
+
+4. Order Flow
+   → New Order → Admin Approval → Release to Seller
+   → Seller cannot see order until Admin approves
+
+5. Settlement
+   → NOT automatic
+   → Admin manually releases payment
+   → Commission auto-calculated per seller rate
+
+6. Customer Restriction
+   → Level 0-5 system
+   → Level 0: All benefits (new customer default)
+   → Level 5: Full ban
+
+7. Build Method
+   → flutter build web --release
+   → npx serve build\web
+   → http://localhost:3000
+
+8. No Cloud Functions yet
+   → All operations direct from Flutter to Firestore
+   → Cloud Functions needed later for: auto-settlement, notifications, fraud detection
+
+=================================================
+## GITHUB REPO
+=================================================
+
+https://github.com/lakez7746/lakez-admin-penel
+Firebase Project: lakez-admin-panel
+
+=================================================
+END OF STRUCTURE
+=================================================
