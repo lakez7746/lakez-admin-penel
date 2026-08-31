@@ -1,0 +1,395 @@
+আমি একটি Flutter + Firebase ভিত্তিক multi-vendor e-commerce app তৈরি করছি।
+আমি নিজে হাতে code লিখছি না; Claude দিয়ে code generate ও update করাচ্ছি।
+
+App-এর user role:
+1. Customer
+2. Seller
+3. Admin
+
+আমার লক্ষ্য:
+- User কোন screen-এ আটকে যাচ্ছে তা জানা
+- কোন workflow-এ user drop করছে তা জানা
+- User-এর UX complaint সংগ্রহ করা
+- App crash এবং technical error জানা
+- Admin Control Panel থেকে এসব দেখা
+- Firebase Console থেকেও raw data ও reports দেখা
+
+তুমি একজন senior Flutter, Firebase এবং UX monitoring architect হিসেবে কাজ করো।
+
+প্রথমে আমার existing project analyse করো। কোনো file বা architecture না বুঝে code পরিবর্তন করবে না।
+প্রথমে আমাকে এই বিষয়গুলো সম্পর্কে প্রশ্ন করো:
+- বর্তমান Flutter folder structure
+- Firebase services already enabled
+- Customer, seller এবং admin screen list
+- Existing authentication এবং Firestore collections
+- Existing admin panel structure
+- Android, iOS অথবা web—কোন platform target করা হচ্ছে
+
+তারপর নিচের system তৈরি করো।
+
+==================================================
+PART 1: FIREBASE SERVICES
+==================================================
+
+প্রয়োজন অনুযায়ী এই Firebase services ব্যবহার করো:
+- Firebase Authentication
+- Cloud Firestore
+- Firebase Analytics
+- Firebase Crashlytics
+- Firebase Performance Monitoring
+- Firebase Storage, যদি screenshot upload দরকার হয়
+
+Firebase configuration-এর জন্য FlutterFire CLI ব্যবহার করো।
+Dependencies-এর exact compatible version project অনুযায়ী নির্ধারণ করো।
+পুরোনো বা deprecated API ব্যবহার করবে না।
+
+==================================================
+PART 2: ANALYTICS EVENT SYSTEM
+==================================================
+
+একটি central AnalyticsService তৈরি করো।
+প্রতিটি screen এবং গুরুত্বপূর্ণ user action-এর event log করো।
+
+Event list:
+
+Common:
+- screen_view
+- button_clicked
+- form_started
+- form_submitted
+- validation_error
+- network_error
+- permission_denied
+
+Customer:
+- signup_started
+- signup_completed
+- login_success
+- login_failed
+- search_product
+- view_product
+- add_to_cart
+- remove_from_cart
+- view_cart
+- begin_checkout
+- select_address
+- select_payment_method
+- payment_started
+- payment_success
+- payment_failed
+- place_order
+- order_success
+- order_cancelled
+- review_submitted
+- ux_problem_reported
+
+Seller:
+- seller_onboarding_started
+- seller_onboarding_completed
+- product_create_started
+- product_created
+- product_update_failed
+- order_viewed
+- order_status_updated
+- stock_updated
+
+Admin:
+- admin_login
+- admin_dashboard_viewed
+- admin_order_updated
+- admin_feedback_reviewed
+- admin_feedback_status_changed
+- admin_report_resolved
+
+প্রতিটি event-এর parameter হিসেবে প্রয়োজন অনুযায়ী পাঠাও:
+- screen_name
+- action_name
+- user_role
+- product_id
+- order_id
+- category
+- error_type
+- app_version
+- platform
+- duration_ms
+
+Password, OTP, card number, token অথবা sensitive personal data কখনো Analytics বা Crashlytics-এ পাঠাবে না।
+
+Analytics code screen widget-এ ছড়িয়ে না দিয়ে reusable service/helper ব্যবহার করো।
+DebugView দিয়ে event test করার নির্দেশনাও দাও।
+
+==================================================
+PART 3: USER FLOW AND FUNNEL
+==================================================
+
+Customer funnel:
+home
+→ product_details
+→ add_to_cart
+→ cart
+→ checkout
+→ payment
+→ order_success
+
+Seller funnel:
+seller_login
+→ seller_dashboard
+→ create_product
+→ submit_product
+→ product_published
+
+Admin funnel:
+admin_login
+→ admin_dashboard
+→ order_management
+→ feedback_management
+→ report_resolved
+
+প্রতিটি funnel step-এর:
+- started event
+- success event
+- failure event
+- duration
+track করো।
+
+Admin Panel-এ funnel summary দেখাও:
+- total users
+- completed users
+- dropped users
+- conversion percentage
+- drop-off percentage
+- most problematic step
+
+==================================================
+PART 4: CRASHLYTICS
+==================================================
+
+Firebase Crashlytics configure করো।
+
+Capture করো:
+- Flutter framework error
+- uncaught async error
+- non-fatal exception
+- API/network error
+- Firestore error
+- authentication error
+- payment error
+
+প্রতিটি error-এর সঙ্গে safe metadata যুক্ত করো:
+- screen_name
+- action_name
+- user_role
+- app_version
+- error_code
+- platform
+
+Crashlytics-এ sensitive data পাঠাবে না।
+Test crash কীভাবে generate ও Firebase Console-এ verify করতে হবে তা লিখে দাও।
+
+==================================================
+PART 5: USER UX FEEDBACK
+==================================================
+
+App-এর প্রতিটি গুরুত্বপূর্ণ screen-এ “Report a Problem” অথবা “Feedback” option রাখো।
+
+Feedback form fields:
+- screen_name
+- category
+- description
+- optional screenshot
+- user_role
+- priority
+- created_at
+- app_version
+- device/platform
+- status
+
+Category:
+- confusing
+- button_not_working
+- too_many_steps
+- slow_loading
+- payment_problem
+- order_problem
+- form_problem
+- missing_feature
+- other
+
+User যেন নিজের submitted feedback দেখতে পারে।
+Admin যেন সব feedback দেখতে, search, filter, update এবং resolve করতে পারে।
+
+Status:
+- New
+- Reviewing
+- Fixed
+- Rejected
+
+Priority:
+- Low
+- Medium
+- High
+- Critical
+
+==================================================
+PART 6: FIRESTORE DATA STRUCTURE
+==================================================
+
+এই collection structure ব্যবহার করো অথবা existing structure-এর সঙ্গে safely adapt করো:
+
+ux_feedback/{feedbackId}
+- userId
+- userRole
+- screenName
+- category
+- description
+- screenshotUrl
+- priority
+- status
+- appVersion
+- platform
+- createdAt
+- updatedAt
+- adminNote
+- resolvedBy
+- resolvedAt
+
+ux_events/{eventId}, যদি raw UX feedback event আলাদা রাখা প্রয়োজন হয়:
+- eventName
+- screenName
+- userRole
+- metadata
+- createdAt
+
+admin_audit_logs/{logId}
+- adminId
+- action
+- targetId
+- createdAt
+- metadata
+
+Firestore security rules তৈরি করো:
+- authenticated user নিজের feedback create এবং নিজের feedback read করতে পারবে
+- user অন্যের feedback read করতে পারবে না
+- admin সব feedback read/update করতে পারবে
+- admin role অবশ্যই secure custom claims অথবা trusted server-side role verification দিয়ে যাচাই করো
+- client থেকে user নিজে admin role লিখতে পারবে না
+
+==================================================
+PART 7: ADMIN CONTROL PANEL
+==================================================
+
+Admin Control Panel-এ “UX Monitoring” section তৈরি করো:
+
+UX Monitoring
+├── Overview
+├── UX Problems
+├── User Feedback
+├── User Flows
+├── Funnel Analysis
+├── Errors
+└── Performance
+
+Overview cards:
+- total feedback
+- new feedback
+- high priority issues
+- affected screens
+- unresolved issues
+- recent crashes
+
+UX Problems page:
+- problem count by screen
+- problem count by category
+- problem count by user role
+- problem count by priority
+- unresolved problem list
+- most reported screen
+- most reported issue
+- date filter
+- role filter
+- status filter
+- search
+
+Feedback detail page:
+- user problem
+- screen name
+- category
+- screenshot
+- app version
+- platform
+- status update
+- priority update
+- admin note
+- resolve action
+
+Funnel page:
+- each funnel step users
+- completed users
+- dropped users
+- conversion rate
+- drop-off rate
+- date range filter
+
+Errors page:
+- recent non-fatal errors
+- error type
+- screen
+- action
+- frequency
+- affected users
+- Crashlytics link/reference
+
+Performance page:
+- slow screens
+- slow network requests
+- loading duration
+- failed requests
+
+সব dashboard query efficient করো।
+প্রয়োজনে Firestore aggregate counters বা Cloud Functions ব্যবহার করো।
+প্রতিটি sensitive admin action audit log-এ রাখো।
+
+==================================================
+PART 8: HOW TO INTERPRET UX PROBLEMS
+==================================================
+
+Admin Panel-এ একটি explanation/help section রাখো।
+
+Rules:
+- অনেক view_product কিন্তু কম add_to_cart = product page বা CTA সমস্যা হতে পারে
+- অনেক add_to_cart কিন্তু কম begin_checkout = cart বা pricing সমস্যা হতে পারে
+- অনেক begin_checkout কিন্তু কম payment_success = checkout/payment সমস্যা হতে পারে
+- একই screen-এ অনেক feedback = সম্ভাব্য UX pain point
+- একই screen-এ অনেক validation_error = form usability সমস্যা হতে পারে
+- একই screen-এ অনেক crash/error = technical এবং UX—দুই ধরনের সমস্যা হতে পারে
+
+Dashboard-এ “Possible UX Problem” লিখবে, “Confirmed UX Problem” নয়, যতক্ষণ না user testing বা feedback দিয়ে verify করা হয়।
+
+==================================================
+PART 9: CODE QUALITY
+==================================================
+
+- Existing code নষ্ট করবে না
+- আগে file-by-file implementation plan দেখাবে
+- প্রতিটি পরিবর্তনের আগে কোন file modify হবে তা বলবে
+- Clean architecture বা existing project architecture অনুসরণ করবে
+- Repository/service/provider pattern ব্যবহার করবে
+- Loading, empty, error এবং success state তৈরি করবে
+- Offline/network failure handle করবে
+- Pagination ব্যবহার করবে
+- Firestore indexes প্রয়োজন হলে জানাবে
+- Security Rules test করার নির্দেশ দেবে
+- Unit এবং integration test-এর basic structure দেবে
+- Code-এর সঙ্গে setup steps এবং testing steps দেবে
+
+প্রথম response-এ code লিখবে না।
+প্রথমে:
+1. Current project analysis
+2. Proposed architecture
+3. Firebase setup checklist
+4. Firestore schema
+5. Event dictionary
+6. Admin panel screen plan
+7. Implementation roadmap
+
+তারপর আমার অনুমতি নিয়ে ধাপে ধাপে code তৈরি করবে।
